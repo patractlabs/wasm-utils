@@ -501,6 +501,22 @@ pub fn inject_gas_counter<R: Rules>(
 			elements::Section::Start(start_idx) => {
 				if *start_idx >= gas_func { *start_idx += 1}
 			},
+            elements::Section::Name(section) => {
+				#[cfg(not(feature = "std"))]
+				use crate::std::string::String;
+				if let Some(funcs) = section.functions_mut() {
+					let mut new_names = elements::IndexMap::<String>::default();
+					for (idx, func) in funcs.names().iter() {
+						if idx > gas_func {
+							new_names.insert(idx + 1, func.clone());
+						} else {
+							new_names.insert(idx, func.clone());
+						}
+					}
+
+					*funcs.names_mut() = new_names;
+				}
+			}
 			_ => { }
 		}
 	}
