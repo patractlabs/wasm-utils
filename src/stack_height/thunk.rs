@@ -145,17 +145,6 @@ pub(crate) fn generate_thunks(
 			elements::Section::Start(start_idx) => {
 				fixup(start_idx)
 			}
-            elements::Section::Name(section) => {
-                if let Some(funcs) = section.functions_mut() {
-                    let mut new_names = elements::IndexMap::<String>::default();
-                    for (mut idx, func) in funcs.names().iter() {
-                        fixup(&mut idx);
-                        new_names.insert(idx, func.to_string());
-                    }
-
-                    *funcs.names_mut() = new_names;
-                }
-            }
 			_ => {}
 		}
 	}
